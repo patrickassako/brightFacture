@@ -1,0 +1,8 @@
+node_modules/
+dist/
+data/*.db
+output/*.pdf
+.env
+logs/
+*.log
+.DS_Store

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrightFacture - Générateur de Factures</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .header-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .form-content {
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #444;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .amount-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .amount-input input {
+            flex: 2;
+        }
+
+        .amount-input select {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .error {
+            background: #fee;
+            border: 1px solid #fcc;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            color: #c33;
+            font-size: 14px;
+        }
+
+        .success {
+            background: #efe;
+            border: 1px solid #cfc;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            color: #3c3;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img src="header.jpg" alt="Header" class="header-image">
+
+        <div class="form-content">
+            <h1>📄 BrightFacture</h1>
+            <p class="subtitle">Générateur de factures PDF professionnel</p>
+
+            <div id="message"></div>
+
+            <form id="invoiceForm">
+            <div class="form-group">
+                <label for="nom">Nom du client *</label>
+                <input type="text" id="nom" name="nom" required placeholder="Ex: Jean Dupont">
+            </div>
+
+            <div class="form-group">
+                <label for="montantADeposer">Montant à déposer *</label>
+                <div class="amount-input">
+                    <input type="number" id="montantADeposer" name="montantADeposer" step="0.01" required
+                        placeholder="1000.00">
+                    <select id="deviseDeposer" name="deviseDeposer" required>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="XAF">XAF (F)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="fraisTransaction">Frais de transaction *</label>
+                <div class="amount-input">
+                    <input type="number" id="fraisTransaction" name="fraisTransaction" step="0.01" required
+                        placeholder="50.00">
+                    <select id="deviseFrais" name="deviseFrais" required>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="XAF">XAF (F)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="montantARecevoir">Montant à recevoir *</label>
+                <div class="amount-input">
+                    <input type="number" id="montantARecevoir" name="montantARecevoir" step="0.01" required
+                        placeholder="950.00">
+                    <select id="deviseRecevoir" name="deviseRecevoir" required>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="XAF">XAF (F)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="taux">Taux (% ou taux de change) *</label>
+                    <input type="number" id="taux" name="taux" step="0.01" min="0" max="10000" required
+                        placeholder="5.00 ou 662">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="numero">Numéro de facture * <span style="font-size: 11px; color: #999;">(modifiable)</span></label>
+                    <input type="text" id="numero" name="numero" required placeholder="FAC-2026-001">
+                </div>
+
+                <div class="form-group">
+                    <label for="statut">Statut *</label>
+                    <select id="statut" name="statut" required>
+                        <option value="">-- Sélectionner --</option>
+                        <option value="Payée">Payée</option>
+                        <option value="En attente">En attente</option>
+                        <option value="Annulée">Annulée</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="date">Date *</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+
+            <button type="submit" id="submitBtn">
+                🚀 Générer la facture PDF
+            </button>
+        </form>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('invoiceForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const messageDiv = document.getElementById('message');
+
+        // Fonction pour générer un numéro de facture automatique
+        function generateInvoiceNumber() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const random = String(Math.floor(Math.random() * 1000)).padStart(3, '0');
+            return `FAC-${year}${month}-${random}`;
+        }
+
+        // Auto-remplir la date du jour (format YYYY-MM-DD pour input type="date")
+        const today = new Date();
+        const dateISOStr = today.getFullYear() + '-' +
+                          String(today.getMonth() + 1).padStart(2, '0') + '-' +
+                          String(today.getDate()).padStart(2, '0');
+        document.getElementById('date').value = dateISOStr;
+
+        // Auto-générer le numéro de facture
+        document.getElementById('numero').value = generateInvoiceNumber();
+
+        // Fonction pour convertir date YYYY-MM-DD en JJ/MM/AAAA
+        function formatDateForAPI(dateStr) {
+            const [year, month, day] = dateStr.split('-');
+            return `${day}/${month}/${year}`;
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            messageDiv.innerHTML = '';
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Génération en cours...';
+
+            try {
+                const formData = new FormData(form);
+                const data = {
+                    nom: formData.get('nom'),
+                    montantADeposer: parseFloat(formData.get('montantADeposer')),
+                    deviseDeposer: formData.get('deviseDeposer'),
+                    fraisTransaction: parseFloat(formData.get('fraisTransaction')),
+                    deviseFrais: formData.get('deviseFrais'),
+                    montantARecevoir: parseFloat(formData.get('montantARecevoir')),
+                    deviseRecevoir: formData.get('deviseRecevoir'),
+                    taux: parseFloat(formData.get('taux')),
+                    numero: formData.get('numero'),
+                    statut: formData.get('statut'),
+                    date: formatDateForAPI(formData.get('date')) // Convertir en JJ/MM/AAAA
+                };
+
+                const url = '/generate';
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.details?.join(', ') || error.error);
+                }
+
+                // Télécharger le PDF
+                const blob = await response.blob();
+                const blobUrl = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = blobUrl;
+                a.download = `facture_${data.numero}.pdf`;
+                
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(blobUrl);
+                document.body.removeChild(a);
+
+                messageDiv.innerHTML = '<div class="success">✅ Facture générée et téléchargée avec succès !</div>';
+            } catch (error) {
+                messageDiv.innerHTML = `<div class="error">❌ Erreur: ${error.message}</div>`;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🚀 Générer la facture PDF';
+            }
+        });
+    </script>
+</body>
+
+</html>

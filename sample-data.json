@@ -1,0 +1,10 @@
+{
+    "nom": "Jean Dupont",
+    "montantADeposer": 1500.00,
+    "fraisTransaction": 75.00,
+    "montantARecevoir": 1425.00,
+    "taux": 5.0,
+    "numero": "FAC-2026-001",
+    "statut": "Payée",
+    "date": "09/02/2026"
+}
