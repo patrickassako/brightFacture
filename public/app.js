@@ -65,16 +65,17 @@ function navigateTo(view) {
     app.currentView = view;
     document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
     document.getElementById(view + '-view')?.classList.remove('hidden');
-    
+
     document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
     });
     document.querySelector(`[data-view="${view}"]`)?.classList.add('active');
-    
+
     // Charger les données selon la vue
     if (view === 'dashboard') loadDashboard();
     if (view === 'factures') loadFactures();
     if (view === 'contacts') loadContacts();
+    if (view === 'profil') loadProfil();
 }
 
 // Dashboard
@@ -396,12 +397,82 @@ async function deleteContact(id) {
     try {
         const res = await authFetch(`/api/contacts/${id}`, { method: 'DELETE' });
         if (!res.ok) throw new Error('Erreur serveur');
-        
+
         loadContacts();
         showToast('Contact supprimé');
     } catch (error) {
         console.error('Erreur suppression contact:', error);
         alert('Erreur lors de la suppression');
+    }
+}
+
+// Profil
+async function loadProfil() {
+    try {
+        const res = await authFetch('/api/auth/me');
+        const user = await res.json();
+
+        document.getElementById('profile-nom').textContent = user.nom;
+        document.getElementById('profile-email').textContent = user.email;
+
+        const roleBadge = document.getElementById('profile-role');
+        roleBadge.textContent = user.role;
+        roleBadge.className = 'badge-role ' + (user.role === 'admin' ? 'admin' : '');
+
+        // Formater la date
+        const createdDate = new Date(user.created_at);
+        document.getElementById('profile-created').textContent = createdDate.toLocaleDateString('fr-FR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        // Réinitialiser le formulaire de mot de passe
+        document.getElementById('password-form').reset();
+    } catch (error) {
+        console.error('Erreur chargement profil:', error);
+        alert('Erreur lors du chargement du profil');
+    }
+}
+
+async function changePassword(event) {
+    event.preventDefault();
+
+    const currentPassword = document.getElementById('current-password').value;
+    const newPassword = document.getElementById('new-password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+
+    // Validation
+    if (newPassword !== confirmPassword) {
+        alert('Les mots de passe ne correspondent pas');
+        return;
+    }
+
+    if (newPassword.length < 6) {
+        alert('Le mot de passe doit contenir au moins 6 caractères');
+        return;
+    }
+
+    try {
+        const res = await authFetch('/api/auth/password', {
+            method: 'PUT',
+            body: JSON.stringify({
+                currentPassword,
+                newPassword
+            })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.error || 'Erreur lors du changement de mot de passe');
+        }
+
+        showToast('Mot de passe changé avec succès');
+        document.getElementById('password-form').reset();
+    } catch (error) {
+        console.error('Erreur changement mot de passe:', error);
+        alert(error.message);
     }
 }
 
@@ -476,11 +547,6 @@ function setupContactAutocomplete() {
 document.addEventListener('DOMContentLoaded', () => {
     // Vérifier l'authentification
     if (!checkAuth()) return;
-
-    // Afficher le nom de l'utilisateur
-    if (app.user && document.getElementById('user-name')) {
-        document.getElementById('user-name').textContent = app.user.nom;
-    }
 
     navigateTo('dashboard');
 

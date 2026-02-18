@@ -27,11 +27,9 @@
                 <script>document.write(getIcon('contacts'));</script>
                 <span class="nav-text">Contacts</span>
             </button>
-        </div>
-        <div class="navbar-user">
-            <span class="user-name" id="user-name"></span>
-            <button class="btn-logout" onclick="logout()" title="Déconnexion">
-                <script>document.write(getIcon('close'));</script>
+            <button class="nav-item" data-view="profil" onclick="navigateTo('profil')">
+                <script>document.write(getIcon('user'));</script>
+                <span class="nav-text">Profil</span>
             </button>
         </div>
     </nav>
@@ -83,6 +81,77 @@
             </button>
         </div>
         <div id="contacts-list" class="cards-grid"></div>
+    </div>
+
+    <!-- Profil View -->
+    <div id="profil-view" class="view container hidden">
+        <div class="view-header">
+            <h1>Mon Profil</h1>
+        </div>
+
+        <!-- Informations utilisateur -->
+        <div class="profile-section">
+            <h2>Informations personnelles</h2>
+            <div class="profile-card">
+                <div class="profile-info">
+                    <div class="info-group">
+                        <label>Nom</label>
+                        <div class="info-value" id="profile-nom">-</div>
+                    </div>
+                    <div class="info-group">
+                        <label>Email</label>
+                        <div class="info-value" id="profile-email">-</div>
+                    </div>
+                    <div class="info-group">
+                        <label>Rôle</label>
+                        <div class="info-value">
+                            <span class="badge-role" id="profile-role">-</span>
+                        </div>
+                    </div>
+                    <div class="info-group">
+                        <label>Membre depuis</label>
+                        <div class="info-value" id="profile-created">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Changement de mot de passe -->
+        <div class="profile-section">
+            <h2>Sécurité</h2>
+            <div class="profile-card">
+                <form id="password-form" onsubmit="changePassword(event)">
+                    <div class="form-group">
+                        <label for="current-password">Mot de passe actuel *</label>
+                        <input type="password" id="current-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-password">Nouveau mot de passe *</label>
+                        <input type="password" id="new-password" required minlength="6">
+                        <small>Minimum 6 caractères</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">Confirmer le mot de passe *</label>
+                        <input type="password" id="confirm-password" required minlength="6">
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        Changer le mot de passe
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Déconnexion -->
+        <div class="profile-section">
+            <h2>Session</h2>
+            <div class="profile-card">
+                <p class="text-gray">Déconnectez-vous de votre compte pour terminer votre session.</p>
+                <button onclick="logout()" class="btn-danger" style="margin-top: 16px;">
+                    <script>document.write(getIcon('close'));</script>
+                    Se déconnecter
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Modal Facture -->

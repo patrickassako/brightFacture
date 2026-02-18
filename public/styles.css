@@ -109,48 +109,10 @@ body {
     background: var(--gray-50);
 }
 
-.navbar-user {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 16px;
-    border-top: 1px solid var(--gray-200);
-}
-
-.user-name {
-    flex: 1;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--gray-900);
-}
-
-.btn-logout {
-    background: none;
-    border: 2px solid var(--danger);
-    color: var(--danger);
-    padding: 8px;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-}
-
-.btn-logout:hover {
-    background: var(--danger);
-    color: white;
-}
-
-.btn-logout .icon svg {
-    width: 18px;
-    height: 18px;
-}
-
 /* Container */
 .container {
     padding: 20px 16px;
-    margin-top: 120px;
+    margin-top: 130px;
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
@@ -559,6 +521,101 @@ input[type="checkbox"] {
 }
 
 /* Responsive */
+/* Profile Page */
+.profile-section {
+    margin-bottom: 32px;
+}
+
+.profile-section h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 16px;
+}
+
+.profile-card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+}
+
+.profile-info {
+    display: grid;
+    gap: 20px;
+}
+
+.info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.info-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    font-size: 16px;
+    color: var(--gray-900);
+    font-weight: 500;
+}
+
+.badge-role {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--primary);
+    color: white;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.badge-role.admin {
+    background: var(--danger);
+}
+
+#password-form .form-group {
+    margin-bottom: 20px;
+}
+
+#password-form small {
+    color: var(--gray-600);
+    font-size: 13px;
+    margin-top: 4px;
+    display: block;
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btn-danger:active {
+    transform: translateY(0);
+}
+
 @media (min-width: 768px) {
     body {
         padding-bottom: 0;
