@@ -1,6 +1,6 @@
-FROM node:18-alpine
+FROM node:20-alpine
 
-RUN apk add --no-cache chromium nss freetype harfbuzz
+RUN apk add --no-cache chromium nss freetype harfbuzz python3 make g++
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
